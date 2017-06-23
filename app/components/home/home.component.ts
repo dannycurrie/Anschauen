@@ -14,16 +14,24 @@ export class HomeComponent {
     users: {};
     audioObject: IAudioObject;
 
+    audioPieces: IAudioObject[];
+
     constructor(private audioService: AudioService) {
-        this.getServiceData();
     }
 
-    getServiceData(){
-        this.audioService.getAudioObject('hello')
+    getServiceData(id: string){
+        this.audioService.getAudioObject(id)
         .subscribe((result: IAudioObject) => {
             console.log(JSON.stringify(result));
             this.audioObject = result;
+            this.audioObject.play();
         });
+    }
+
+    stopPlaying(){
+        if(this.audioObject){
+            this.audioObject.stop();
+        }
     }
 
     playData(){

@@ -4,7 +4,9 @@ export interface IAudioObject {
     id: string;
     filepath: string;
     context: AudioContext;
-    audio: AudioBuffer;
+    audioBuffer: AudioBuffer;
+    audioBufferSource: AudioBufferSourceNode;
     play: Function;
+    stop: Function,
     init: boolean;
 }

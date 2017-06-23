@@ -25,12 +25,14 @@ export class AudioService {
         var f = this.getFilePath(id);
         var buffer;
         var audioObject: IAudioObject;
+        var bufferSourceNode: AudioBufferSourceNode;
 
         audioObject = {
             id: id,
             filepath: f,
             context: ac,
-            audio: buffer,
+            audioBuffer: buffer,
+            audioBufferSource: bufferSourceNode,
             play: ()=>{
 
                 if(!audioObject.init){
@@ -42,22 +44,23 @@ export class AudioService {
                         // decode audio data
                         ac.decodeAudioData(getSound.response, function(result){
                             audioObject.init = true;
-                            audioObject.audio = result;
-                            var playSound = audioObject.context.createBufferSource();
-                            playSound.buffer = audioObject.audio;
-                            playSound.connect(audioObject.context.destination);
-                            playSound.start(audioObject.context.currentTime);
-                            playSound.loop = true;
+                            audioObject.audioBuffer = result;
+                            audioObject.audioBufferSource = audioObject.context.createBufferSource();
+                            audioObject.audioBufferSource.buffer = audioObject.audioBuffer;
+                            audioObject.audioBufferSource.connect(audioObject.context.destination);
+                            audioObject.audioBufferSource.start(audioObject.context.currentTime);
+                            audioObject.audioBufferSource.loop = true;
                         });
                     }
                     getSound.send();
                 }else{
-                    var playSound = audioObject.context.createBufferSource();
-                    playSound.buffer = audioObject.audio;
-                    playSound.connect(audioObject.context.destination);
-                    playSound.start(audioObject.context.currentTime);
-                    playSound.loop = true;
+                    audioObject.audioBufferSource.start(audioObject.context.currentTime);
+                    audioObject.audioBufferSource.loop = true;
                 }
+            },
+            stop: () =>{
+                if(audioObject.init)
+                    audioObject.audioBufferSource.stop(audioObject.context.currentTime);
             },
             init: false
         };
@@ -66,7 +69,7 @@ export class AudioService {
     }
 
     getFilePath(id: string){
-        return "AudioFiles/Synth.wav";
+        return "AudioFiles/" + id + ".wav";
     }
 
     getAudioContext(){
