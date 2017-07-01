@@ -13,24 +13,25 @@ export class AudioComponent {
     audioObject: IAudioObject;
 
     constructor(private audioService: AudioService) {
+        this.getAudio("synth");
     }
 
-    getServiceData(id: string){
+    getAudio(id: string){
         this.audioService.getAudioObject(id)
         .subscribe((result: IAudioObject) => {
             console.log(JSON.stringify(result));
             this.audioObject = result;
-            this.audioObject.play();
         });
     }
 
-    stopPlaying(){
+    playAudio(){
+        if(this.audioObject)
+            this.audioObject.play();
+    }
+
+    stopAudio(){
         if(this.audioObject){
             this.audioObject.stop();
         }
-    }
-
-    playData(){
-        this.audioObject.play();
     }
 }
