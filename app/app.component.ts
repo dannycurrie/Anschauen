@@ -4,7 +4,7 @@ import { IAudioObject }  from './Shared/Interfaces';
 
 @Component({
     selector: 'my-app',
-    styleUrls: ['components/test/test.component.css'],
+    styleUrls: [],
     templateUrl : 'app.component.html'
 })
 export class AppComponent {

@@ -6,8 +6,8 @@ import { AppComponent }  from './app.component';
 import { AboutComponent } from "./components/about/about.component";
 import { routing } from "./routes";
 import { HomeComponent } from "./components/home/home.component";
-import { TestComponent } from "./components/test/test.component";
 import { AudioService } from './Services/AudioService';
+import { AudioComponent} from './components/audio/audio.component';
 
 @NgModule({
     imports: [
@@ -20,7 +20,7 @@ import { AudioService } from './Services/AudioService';
         AppComponent,
         AboutComponent,
         HomeComponent,
-        TestComponent
+        AudioComponent
     ],
     providers: [ AudioService ],
     bootstrap: [ AppComponent ]
