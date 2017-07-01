@@ -13,6 +13,7 @@ export class AudioComponent {
 
     _audioId: string;
     audioObject: IAudioObject;
+    playing: boolean = false;
 
     @Input() set audioId(audioId: string){
         this._audioId = audioId;
@@ -31,14 +32,16 @@ export class AudioComponent {
     }
 
     playAudio(){
-        if(this.audioObject){
+        if(this.audioObject && !this.playing){
             this.audioObject.play();
+            this.playing = true;
         }
     }
 
     stopAudio(){
-        if(this.audioObject){
+        if(this.audioObject && this.playing){
             this.audioObject.stop();
+            this.playing = false;
         }
     }
 }

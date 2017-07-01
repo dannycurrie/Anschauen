@@ -8,9 +8,6 @@ import { IAudioObject }  from './Shared/Interfaces';
     templateUrl : 'app.component.html'
 })
 export class AppComponent {
-    name: string = "The P!";
-
-    prop: string = "Start";
 
     constructor(private audioService: AudioService) {
 

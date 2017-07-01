@@ -54,6 +54,9 @@ export class AudioService {
                     }
                     getSound.send();
                 }else{
+                    audioObject.audioBufferSource = audioObject.context.createBufferSource();
+                    audioObject.audioBufferSource.buffer = audioObject.audioBuffer;
+                    audioObject.audioBufferSource.connect(audioObject.context.destination);
                     audioObject.audioBufferSource.start(audioObject.context.currentTime);
                     audioObject.audioBufferSource.loop = true;
                 }
