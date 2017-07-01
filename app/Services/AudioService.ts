@@ -7,6 +7,8 @@ import { IAudioObject } from '../Shared/Interfaces';
 @Injectable()
 export class AudioService {
 
+    context: AudioContext;
+
     constructor(private http: Http){
 
     }
@@ -26,6 +28,7 @@ export class AudioService {
         var buffer;
         var audioObject: IAudioObject;
         var bufferSourceNode: AudioBufferSourceNode;
+        var gainNode: GainNode = ac.createGain();
 
         audioObject = {
             id: id,
@@ -33,9 +36,14 @@ export class AudioService {
             context: ac,
             audioBuffer: buffer,
             audioBufferSource: bufferSourceNode,
+            gain: gainNode,
             play: ()=>{
-
-                if(!audioObject.init){
+                    audioObject.gain.gain.value = 1;
+            },
+            stop: () =>{
+                audioObject.gain.gain.value = 0;
+            },
+            init: ()=> {
                     var getSound = new XMLHttpRequest();
                     getSound.open("GET", f, true);
                     getSound.responseType = "arraybuffer";
@@ -43,29 +51,26 @@ export class AudioService {
                         console.log('decoding');
                         // decode audio data
                         ac.decodeAudioData(getSound.response, function(result){
-                            audioObject.init = true;
                             audioObject.audioBuffer = result;
                             audioObject.audioBufferSource = audioObject.context.createBufferSource();
                             audioObject.audioBufferSource.buffer = audioObject.audioBuffer;
-                            audioObject.audioBufferSource.connect(audioObject.context.destination);
+                            
+                            // connect other nodes
+                            audioObject.audioBufferSource.connect(audioObject.gain);
+                            audioObject.gain.connect(audioObject.context.destination);
+                            // fist time, we'll play silently
+                            audioObject.gain.gain.value = 0;
+
                             audioObject.audioBufferSource.start(audioObject.context.currentTime);
                             audioObject.audioBufferSource.loop = true;
+
+                            audioObject.isInit = true;
                         });
                     }
                     getSound.send();
-                }else{
-                    audioObject.audioBufferSource = audioObject.context.createBufferSource();
-                    audioObject.audioBufferSource.buffer = audioObject.audioBuffer;
-                    audioObject.audioBufferSource.connect(audioObject.context.destination);
-                    audioObject.audioBufferSource.start(audioObject.context.currentTime);
-                    audioObject.audioBufferSource.loop = true;
-                }
+                
             },
-            stop: () =>{
-                if(audioObject.init)
-                    audioObject.audioBufferSource.stop(audioObject.context.currentTime);
-            },
-            init: false
+            isInit: false
         };
 
         return audioObject;
@@ -76,7 +81,10 @@ export class AudioService {
     }
 
     getAudioContext(){
-        return new AudioContext();
+        if(!this.context)
+            this.context = new AudioContext();
+
+        return this.context;
     }
 
     getAudio(c: AudioContext) : AudioBufferSourceNode {

@@ -18,6 +18,8 @@ export class AudioComponent {
     @Input() set audioId(audioId: string){
         this._audioId = audioId;
         this.getAudio(this._audioId);
+        // start playing at no volume, to ensure timing is accurate between audio pieces
+        this.initAudio();
     }
 
     constructor(private audioService: AudioService) {
@@ -30,6 +32,11 @@ export class AudioComponent {
             this.audioObject = result;
         });
     }
+
+    initAudio(){
+        this.audioObject.init();
+    }
+
 
     playAudio(){
         if(this.audioObject && !this.playing){
