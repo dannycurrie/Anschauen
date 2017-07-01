@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Http } from "@angular/http";
 import 'rxjs/add/operator/map';
 import { AudioService } from '../../Services/AudioService';
@@ -10,10 +10,16 @@ import { IAudioObject } from '../../Shared/Interfaces';
     styleUrls: ['components/audio/audio.component.css']
 })
 export class AudioComponent {
+
+    _audioId: string;
     audioObject: IAudioObject;
 
+    @Input() set audioId(audioId: string){
+        this._audioId = audioId;
+        this.getAudio(this._audioId);
+    }
+
     constructor(private audioService: AudioService) {
-        this.getAudio("synth");
     }
 
     getAudio(id: string){
@@ -25,8 +31,9 @@ export class AudioComponent {
     }
 
     playAudio(){
-        if(this.audioObject)
+        if(this.audioObject){
             this.audioObject.play();
+        }
     }
 
     stopAudio(){
