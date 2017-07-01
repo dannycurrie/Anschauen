@@ -1,4 +1,5 @@
-<h3>{{_audioId}}</h3>
-<button (click)="playAudio()">Play</button>
+<h3 [class.playing]="playing">{{_audioId}}</h3>
+<button (click)="playAudio()" [disabled]="playing">Play</button>
 <button (click)="stopAudio()">Stop</button>
+
 
