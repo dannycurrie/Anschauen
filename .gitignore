@@ -1,6 +1,4 @@
 node_modules
-app/**/*.js
-app/**/*.js.map
 typings
 npm-debug.log
 public/ng2
@@ -8,6 +6,3 @@ public/ng2
 .idea
 *.iml
 *.ipr
-public/js/bundle.min.js
-public/js/bundle.min.js.gz
-*.wav
