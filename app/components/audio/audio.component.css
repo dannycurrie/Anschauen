@@ -5,3 +5,8 @@
 .notplaying{
     color: grey;
 }
+
+svg{
+    height: 100;
+    width: 100;
+}

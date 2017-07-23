@@ -29,11 +29,13 @@ export class AudioService {
         var audioObject: IAudioObject;
         var bufferSourceNode: AudioBufferSourceNode;
         var gainNode: GainNode = ac.createGain();
+        var analyser: AnalyserNode = ac.createAnalyser();
 
         audioObject = {
             id: id,
             filepath: f,
             context: ac,
+            analyser: analyser,
             audioBuffer: buffer,
             audioBufferSource: bufferSourceNode,
             gain: gainNode,
@@ -58,6 +60,7 @@ export class AudioService {
                             // connect other nodes
                             audioObject.audioBufferSource.connect(audioObject.gain);
                             audioObject.gain.connect(audioObject.context.destination);
+                            audioObject.audioBufferSource.connect(audioObject.analyser);
                             // fist time, we'll play silently
                             audioObject.gain.gain.value = 0;
 

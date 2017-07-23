@@ -4,6 +4,7 @@ export interface IAudioObject {
     id: string;
     filepath: string;
     context: AudioContext;
+    analyser: AnalyserNode;
     gain: GainNode;
     audioBuffer: AudioBuffer;
     audioBufferSource: AudioBufferSourceNode;

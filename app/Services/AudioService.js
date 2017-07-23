@@ -28,10 +28,12 @@ var AudioService = (function () {
         var audioObject;
         var bufferSourceNode;
         var gainNode = ac.createGain();
+        var analyser = ac.createAnalyser();
         audioObject = {
             id: id,
             filepath: f,
             context: ac,
+            analyser: analyser,
             audioBuffer: buffer,
             audioBufferSource: bufferSourceNode,
             gain: gainNode,
@@ -55,6 +57,7 @@ var AudioService = (function () {
                         // connect other nodes
                         audioObject.audioBufferSource.connect(audioObject.gain);
                         audioObject.gain.connect(audioObject.context.destination);
+                        audioObject.audioBufferSource.connect(audioObject.analyser);
                         // fist time, we'll play silently
                         audioObject.gain.gain.value = 0;
                         audioObject.audioBufferSource.start(audioObject.context.currentTime);

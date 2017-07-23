@@ -12,10 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 require("rxjs/add/operator/map");
 var AudioService_1 = require("../../Services/AudioService");
+var D3 = require("d3");
 var AudioComponent = (function () {
-    function AudioComponent(audioService) {
+    function AudioComponent(element, audioService) {
         this.audioService = audioService;
         this.playing = false;
+        this.svgHeight = 600;
+        this.svgWidth = 960;
+        this.parentNativeElement = element.nativeElement;
     }
     Object.defineProperty(AudioComponent.prototype, "audioId", {
         set: function (audioId) {
@@ -33,6 +37,7 @@ var AudioComponent = (function () {
             .subscribe(function (result) {
             console.log(JSON.stringify(result));
             _this.audioObject = result;
+            _this.analyser = result.analyser;
         });
     };
     AudioComponent.prototype.initAudio = function () {
@@ -42,13 +47,84 @@ var AudioComponent = (function () {
         if (this.audioObject && !this.playing) {
             this.audioObject.play();
             this.playing = true;
+            var svg = D3.select(this.parentNativeElement).append('svg')
+                .attr('height', this.svgHeight)
+                .attr('width', this.svgWidth);
+            this.renderChart(svg);
         }
     };
     AudioComponent.prototype.stopAudio = function () {
         if (this.audioObject && this.playing) {
             this.audioObject.stop();
             this.playing = false;
+            this.audioObject.audioBufferSource.disconnect(this.audioObject.analyser);
         }
+    };
+    AudioComponent.prototype.renderChart = function (svg) {
+        var _this = this;
+        requestAnimationFrame(function () { return _this.renderChart(svg); });
+        // copy frequency data to frequencyData array.
+        this.frequencyData = new Uint8Array(200);
+        this.analyser.getByteFrequencyData(this.frequencyData);
+        var filteredFreqData = [];
+        var i = 0;
+        this.frequencyData.forEach(function (element) {
+            if (i % 4 == 0) {
+                console.log(element);
+                filteredFreqData.push(element);
+            }
+            i++;
+        }, this);
+        // scale things to fit
+        var radiusScale = D3.scaleLinear()
+            .domain([0, D3.max(filteredFreqData)])
+            .range([0, this.svgWidth / 2 - 10]);
+        var hueScale = D3.scaleLinear()
+            .domain([200, 207])
+            .range([0, 1]);
+        // update d3 chart with new data
+        var circles = svg.selectAll('circle')
+            .data(filteredFreqData);
+        circles.enter().append('circle');
+        circles
+            .attr("r", function (d) { return radiusScale(d); })
+            .attr('cx', 100 / 2)
+            .attr('cy', 100 / 2)
+            .attr('stroke', '#000000')
+            .attr('fill', 'none');
+        //     .attr({
+        //         'r': (d: number)=> { return radiusScale(d); },
+        //         'c': 100 / 2,
+        //         'cy': 100 / 2,
+        //         'fill': 'none', 
+        //         'stroke-width': 0.5,
+        //         'stroke-opacity': 0.3,
+        //         'stroke': '#FFFFFF'
+        //         //stroke: function(d) { return d3.hsl(hueScale(d), 1, 0.5); }
+        //    });
+        circles.exit().remove();
+        //text
+        // var texts = svg.selectAll('text')
+        //     .data(filteredFreqData);
+        // texts.enter().append('text');
+        // texts
+        //     .attr("x", function(d){ 
+        //         if(d % 2 == 0)
+        //             return svgWidth/2 - radiusScale(d);
+        //         else
+        //             return svgWidth/2 + radiusScale(d) - (d / 2);
+        //     })
+        //     .attr("y", function(d){
+        //          if(d % 2 == 0)
+        //             return svgHeight/2 - d; 
+        //         else
+        //             return svgHeight/2 + d; 
+        //         })
+        //     .text(function(d){ return String.fromCharCode(97 + (d/2)); })
+        //     .attr("font-family", "sans-serif")
+        //     .attr("font-size", function(d) { return d / 2; } )
+        //     .attr("fill", colour);
+        // texts.exit().remove();
     };
     return AudioComponent;
 }());
@@ -63,7 +139,7 @@ AudioComponent = __decorate([
         templateUrl: 'components/audio/audio.component.html',
         styleUrls: ['components/audio/audio.component.css']
     }),
-    __metadata("design:paramtypes", [AudioService_1.AudioService])
+    __metadata("design:paramtypes", [core_1.ElementRef, AudioService_1.AudioService])
 ], AudioComponent);
 exports.AudioComponent = AudioComponent;
 //# sourceMappingURL=audio.component.js.map
