@@ -15,6 +15,7 @@ var routes_1 = require("./routes");
 var home_component_1 = require("./components/home/home.component");
 var AudioService_1 = require("./Services/AudioService");
 var audio_component_1 = require("./components/audio/audio.component");
+var audio_viz_component_1 = require("./components/audio-viz/audio-viz.component");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -32,7 +33,8 @@ AppModule = __decorate([
             app_component_1.AppComponent,
             about_component_1.AboutComponent,
             home_component_1.HomeComponent,
-            audio_component_1.AudioComponent
+            audio_component_1.AudioComponent,
+            audio_viz_component_1.AudioVizComponent
         ],
         providers: [AudioService_1.AudioService],
         bootstrap: [app_component_1.AppComponent]

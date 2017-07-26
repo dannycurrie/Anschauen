@@ -28,7 +28,7 @@ var AudioService = (function () {
         var audioObject;
         var bufferSourceNode;
         var gainNode = ac.createGain();
-        var analyser = ac.createAnalyser();
+        var analyser = this.getAnalyser();
         audioObject = {
             id: id,
             filepath: f,
@@ -78,6 +78,11 @@ var AudioService = (function () {
         if (!this.context)
             this.context = new AudioContext();
         return this.context;
+    };
+    AudioService.prototype.getAnalyser = function () {
+        if (!this.analyser)
+            this.analyser = this.getAudioContext().createAnalyser();
+        return this.analyser;
     };
     AudioService.prototype.getAudio = function (c) {
         return c.createBufferSource();

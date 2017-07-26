@@ -8,6 +8,7 @@ import { routing } from "./routes";
 import { HomeComponent } from "./components/home/home.component";
 import { AudioService } from './Services/AudioService';
 import { AudioComponent} from './components/audio/audio.component';
+import { AudioVizComponent }  from './components/audio-viz/audio-viz.component'
 
 @NgModule({
     imports: [
@@ -20,7 +21,8 @@ import { AudioComponent} from './components/audio/audio.component';
         AppComponent,
         AboutComponent,
         HomeComponent,
-        AudioComponent
+        AudioComponent,
+        AudioVizComponent
     ],
     providers: [ AudioService ],
     bootstrap: [ AppComponent ]

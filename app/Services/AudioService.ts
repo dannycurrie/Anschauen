@@ -8,6 +8,7 @@ import { IAudioObject } from '../Shared/Interfaces';
 export class AudioService {
 
     context: AudioContext;
+    analyser: AnalyserNode;
 
     constructor(private http: Http){
 
@@ -29,7 +30,7 @@ export class AudioService {
         var audioObject: IAudioObject;
         var bufferSourceNode: AudioBufferSourceNode;
         var gainNode: GainNode = ac.createGain();
-        var analyser: AnalyserNode = ac.createAnalyser();
+        var analyser: AnalyserNode = this.getAnalyser();
 
         audioObject = {
             id: id,
@@ -88,6 +89,13 @@ export class AudioService {
             this.context = new AudioContext();
 
         return this.context;
+    }
+
+    getAnalyser(){
+        if(!this.analyser)
+            this.analyser = this.getAudioContext().createAnalyser();
+            
+        return this.analyser;
     }
 
     getAudio(c: AudioContext) : AudioBufferSourceNode {
