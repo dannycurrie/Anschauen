@@ -42,6 +42,7 @@ export class AudioComponent {
     playAudio(){
         if(this.audioObject && !this.playing){
             this.audioObject.play();
+            this.audioObject.audioBufferSource.connect(this.audioService.analyser);
             this.playing = true;
         }
     }
@@ -50,7 +51,7 @@ export class AudioComponent {
         if(this.audioObject && this.playing){
             this.audioObject.stop();
             this.playing = false;
-            this.audioObject.audioBufferSource.disconnect(this.audioObject.analyser);
+            this.audioObject.audioBufferSource.disconnect(this.audioService.analyser);
         }
     }
 }

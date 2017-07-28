@@ -57,7 +57,6 @@ var AudioService = (function () {
                         // connect other nodes
                         audioObject.audioBufferSource.connect(audioObject.gain);
                         audioObject.gain.connect(audioObject.context.destination);
-                        audioObject.audioBufferSource.connect(audioObject.analyser);
                         // fist time, we'll play silently
                         audioObject.gain.gain.value = 0;
                         audioObject.audioBufferSource.start(audioObject.context.currentTime);

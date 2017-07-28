@@ -37,7 +37,6 @@ var AudioVizComponent = (function () {
         var i = 0;
         this.frequencyData.forEach(function (element) {
             if (i % 4 == 0) {
-                console.log(element);
                 filteredFreqData.push(element);
             }
             i++;
@@ -59,16 +58,6 @@ var AudioVizComponent = (function () {
             .attr('cy', 100 / 2)
             .attr('stroke', '#000000')
             .attr('fill', 'none');
-        //     .attr({
-        //         'r': (d: number)=> { return radiusScale(d); },
-        //         'c': 100 / 2,
-        //         'cy': 100 / 2,
-        //         'fill': 'none', 
-        //         'stroke-width': 0.5,
-        //         'stroke-opacity': 0.3,
-        //         'stroke': '#FFFFFF'
-        //         //stroke: function(d) { return d3.hsl(hueScale(d), 1, 0.5); }
-        //    });
         circles.exit().remove();
         //text
         // var texts = svg.selectAll('text')

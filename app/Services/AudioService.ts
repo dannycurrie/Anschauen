@@ -61,7 +61,6 @@ export class AudioService {
                             // connect other nodes
                             audioObject.audioBufferSource.connect(audioObject.gain);
                             audioObject.gain.connect(audioObject.context.destination);
-                            audioObject.audioBufferSource.connect(audioObject.analyser);
                             // fist time, we'll play silently
                             audioObject.gain.gain.value = 0;
 
