@@ -1,9 +1,5 @@
-<h3 [class.playing]="playing">{{_audioId}}</h3>
-<button (click)="playAudio()" [disabled]="playing">Play</button>
-<button (click)="stopAudio()">Stop</button>
-
 <div>
-<svg></svg>
+    <h3 (click)="playAudio()" [class.playing]="playing">{{_audioId}}</h3>
 </div>
 
 

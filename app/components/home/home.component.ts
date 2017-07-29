@@ -13,13 +13,15 @@ export class HomeComponent {
 
     // counting the loaded audio pieces so we can sync their inits
     _audioInitCount:number = 0;
+    _totalAudioComponents:number = 8;
 
     constructor(private audioService: AudioService) {
-        this.audioService.getMessage().subscribe(id => { 
+        this.audioService.getAudioLoadNotification().subscribe(id => { 
             this._audioInitCount++;
             console.log(id.id + ' loaded. ' + this._audioInitCount + ' of 8');
 
-            if(this._audioInitCount == 8){
+            // if we have all of the components, proceed with initiation
+            if(this._audioInitCount == this._totalAudioComponents){
                 this.audioService.initAudioObjects();
             }
         );

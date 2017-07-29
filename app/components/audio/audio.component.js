@@ -38,14 +38,12 @@ var AudioComponent = (function () {
         this.audioObject.init();
     };
     AudioComponent.prototype.playAudio = function () {
-        if (this.audioObject && !this.playing) {
+        if (!this.playing) {
             this.audioObject.play();
             this.audioObject.audioBufferSource.connect(this.audioService.analyser);
             this.playing = true;
         }
-    };
-    AudioComponent.prototype.stopAudio = function () {
-        if (this.audioObject && this.playing) {
+        else {
             this.audioObject.stop();
             this.playing = false;
             this.audioObject.audioBufferSource.disconnect(this.audioService.analyser);

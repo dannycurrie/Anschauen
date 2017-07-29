@@ -107,11 +107,12 @@ export class AudioService {
     }
 
     initAudioObjects(){
+        // grab current time to sync sounds 
         var currentTime = this.context.currentTime;
         this.audioObjects.forEach((ob) => { ob.init(currentTime); })
     }
 
-    getMessage(): Observable<any> {
+    getAudioLoadNotification(): Observable<any> {
         return this.subject.asObservable();
     }
 }

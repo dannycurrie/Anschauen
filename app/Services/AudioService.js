@@ -96,10 +96,11 @@ var AudioService = (function () {
         return c.createBufferSource();
     };
     AudioService.prototype.initAudioObjects = function () {
+        // grab current time to sync sounds 
         var currentTime = this.context.currentTime;
         this.audioObjects.forEach(function (ob) { ob.init(currentTime); });
     };
-    AudioService.prototype.getMessage = function () {
+    AudioService.prototype.getAudioLoadNotification = function () {
         return this.subject.asObservable();
     };
     return AudioService;

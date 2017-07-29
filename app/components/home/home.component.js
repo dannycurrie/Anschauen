@@ -18,10 +18,12 @@ var HomeComponent = (function () {
         this.audioService = audioService;
         // counting the loaded audio pieces so we can sync their inits
         this._audioInitCount = 0;
-        this.audioService.getMessage().subscribe(function (id) {
+        this._totalAudioComponents = 8;
+        this.audioService.getAudioLoadNotification().subscribe(function (id) {
             _this._audioInitCount++;
             console.log(id.id + ' loaded. ' + _this._audioInitCount + ' of 8');
-            if (_this._audioInitCount == 8) {
+            // if we have all of the components, proceed with initiation
+            if (_this._audioInitCount == _this._totalAudioComponents) {
                 _this.audioService.initAudioObjects();
             }
         });

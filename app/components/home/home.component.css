@@ -1,2 +1,8 @@
 my-audio{
+    float: left;
 }
+
+#audioControls{
+    display: inline;
+}
+
