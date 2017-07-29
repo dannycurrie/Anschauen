@@ -1,12 +1,12 @@
 <audio-viz></audio-viz>
 <div class="col-xs-12" id="audioControls">
-<my-audio audioId="synth"></my-audio>
-<my-audio audioId="drums"></my-audio>
-<my-audio audioId="bass"></my-audio>
-<my-audio audioId="drummedglitch"></my-audio>
-<my-audio audioId="glitch"></my-audio>
-<my-audio audioId="highpiano"></my-audio>
-<my-audio audioId="mainpiano"></my-audio>
-<my-audio audioId="drumhighglitch"></my-audio>
+<my-audio (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="synth"></my-audio>
+<my-audio (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="drums"></my-audio>
+<my-audio (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="bass"></my-audio>
+<my-audio (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="drummedglitch"></my-audio>
+<my-audio (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="glitch"></my-audio>
+<my-audio (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="highpiano"></my-audio>
+<my-audio (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="mainpiano"></my-audio>
+<my-audio (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="drumhighglitch"></my-audio>
 </div>
 

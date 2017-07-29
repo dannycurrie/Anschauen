@@ -3,6 +3,7 @@ import { Http } from "@angular/http";
 import 'rxjs/add/operator/map';
 import { AudioService } from '../../Services/AudioService';
 import { IAudioObject } from '../../Shared/Interfaces';
+import { AudioComponent } from '../audio/audio.component'
 import * as D3 from 'd3';
 
 @Component({
@@ -39,6 +40,7 @@ export class AudioVizComponent {
         this.analyser.getByteFrequencyData(this.frequencyData);
         var filteredFreqData:number[] = [];
         var i = 0;
+        // filter the fequency data to give a more impactful/less cluttered viz
         this.frequencyData.forEach(function(element) {
             if(i % 4 == 0){
                 filteredFreqData.push(element);

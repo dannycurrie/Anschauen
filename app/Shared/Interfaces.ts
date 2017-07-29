@@ -1,4 +1,5 @@
-import { ModuleWithProviders } from '@angular/core';
+import { ModuleWithProviders, EventEmitter } from '@angular/core';
+import { Subject } from 'rxjs/Subject';
 
 export interface IAudioObject {
     id: string;
@@ -10,6 +11,8 @@ export interface IAudioObject {
     audioBufferSource: AudioBufferSourceNode;
     play: Function;
     stop: Function;
+    loadAudio: Function;
     init: Function;
     isInit: boolean;
+    subject:Subject<any>;
 }

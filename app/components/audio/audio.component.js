@@ -21,8 +21,6 @@ var AudioComponent = (function () {
         set: function (audioId) {
             this._audioId = audioId;
             this.getAudio(this._audioId);
-            // start playing at no volume, to ensure timing is accurate between audio pieces
-            this.initAudio();
         },
         enumerable: true,
         configurable: true
@@ -31,8 +29,9 @@ var AudioComponent = (function () {
         var _this = this;
         this.audioService.getAudioObject(id)
             .subscribe(function (result) {
-            console.log(JSON.stringify(result));
             _this.audioObject = result;
+            // TODO: should the component do this?
+            _this.audioObject.loadAudio();
         });
     };
     AudioComponent.prototype.initAudio = function () {

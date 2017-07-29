@@ -10,10 +10,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
+var AudioService_1 = require("../../Services/AudioService");
 require("rxjs/add/operator/map");
 var HomeComponent = (function () {
-    function HomeComponent() {
-        this.name = "Home page";
+    function HomeComponent(audioService) {
+        var _this = this;
+        this.audioService = audioService;
+        // counting the loaded audio pieces so we can sync their inits
+        this._audioInitCount = 0;
+        this.audioService.getMessage().subscribe(function (id) {
+            _this._audioInitCount++;
+            console.log(id.id + ' loaded. ' + _this._audioInitCount + ' of 8');
+            if (_this._audioInitCount == 8) {
+                _this.audioService.initAudioObjects();
+            }
+        });
     }
     return HomeComponent;
 }());
@@ -23,7 +34,7 @@ HomeComponent = __decorate([
         templateUrl: 'components/home/home.component.html',
         styleUrls: ['components/home/home.component.css']
     }),
-    __metadata("design:paramtypes", [])
+    __metadata("design:paramtypes", [AudioService_1.AudioService])
 ], HomeComponent);
 exports.HomeComponent = HomeComponent;
 //# sourceMappingURL=home.component.js.map

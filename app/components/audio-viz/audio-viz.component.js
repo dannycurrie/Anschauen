@@ -35,6 +35,7 @@ var AudioVizComponent = (function () {
         this.analyser.getByteFrequencyData(this.frequencyData);
         var filteredFreqData = [];
         var i = 0;
+        // filter the fequency data to give a more impactful/less cluttered viz
         this.frequencyData.forEach(function (element) {
             if (i % 4 == 0) {
                 filteredFreqData.push(element);

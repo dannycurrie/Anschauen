@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Http } from "@angular/http";
 import 'rxjs/add/operator/map';
 import { AudioService } from '../../Services/AudioService';
@@ -19,8 +19,6 @@ export class AudioComponent {
     @Input() set audioId(audioId: string){
         this._audioId = audioId;
         this.getAudio(this._audioId);
-        // start playing at no volume, to ensure timing is accurate between audio pieces
-        this.initAudio();
     }
 
     constructor(private audioService: AudioService) {
@@ -29,8 +27,9 @@ export class AudioComponent {
     getAudio(id: string){
         this.audioService.getAudioObject(id)
         .subscribe((result: IAudioObject) => {
-            console.log(JSON.stringify(result));
             this.audioObject = result;
+            // TODO: should the component do this?
+            this.audioObject.loadAudio();
         });
     }
 

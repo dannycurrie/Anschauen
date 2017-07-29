@@ -1,24 +1,26 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Output, EventEmitter, OnInit } from '@angular/core';
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Subscriber } from 'rxjs/Subscriber';
 import { IAudioObject } from '../Shared/Interfaces';
+import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class AudioService {
 
     context: AudioContext;
     analyser: AnalyserNode;
+    audioObjects: Array<IAudioObject> = new Array<IAudioObject>();
+    notifyLoad:Observable<string>;
+    private subject = new Subject<any>();
 
     constructor(private http: Http){
 
     }
 
     getAudioObject(id: string) : Observable<IAudioObject>{
-        // TODO create and return audio object
-
         var audioObject: IAudioObject = this.initAudioObject(id);
-
+        this.audioObjects.push(audioObject);
         return new Observable<IAudioObject>((subscriber: Subscriber<IAudioObject>) => subscriber.next(audioObject));
     }
 
@@ -34,6 +36,7 @@ export class AudioService {
 
         audioObject = {
             id: id,
+            subject: this.subject,
             filepath: f,
             context: ac,
             analyser: analyser,
@@ -46,12 +49,13 @@ export class AudioService {
             stop: () =>{
                 audioObject.gain.gain.value = 0;
             },
-            init: ()=> {
+            loadAudio: (notifyLoad:Function) => {
+                console.log('loading ' + audioObject.id);
                     var getSound = new XMLHttpRequest();
                     getSound.open("GET", f, true);
                     getSound.responseType = "arraybuffer";
                     getSound.onload = function(){
-                        console.log('decoding');
+                        console.log('decoding ' + audioObject.id);
                         // decode audio data
                         ac.decodeAudioData(getSound.response, function(result){
                             audioObject.audioBuffer = result;
@@ -61,17 +65,18 @@ export class AudioService {
                             // connect other nodes
                             audioObject.audioBufferSource.connect(audioObject.gain);
                             audioObject.gain.connect(audioObject.context.destination);
-                            // fist time, we'll play silently
-                            audioObject.gain.gain.value = 0;
-
-                            audioObject.audioBufferSource.start(audioObject.context.currentTime);
-                            audioObject.audioBufferSource.loop = true;
-
-                            audioObject.isInit = true;
+                            audioObject.subject.next({ id: id });
                         });
                     }
                     getSound.send();
-                
+            },
+            init: (currentTime:number)=>{
+                // fist time, we'll play silently
+                audioObject.gain.gain.value = 0;
+                audioObject.isInit = true;
+                audioObject.audioBufferSource.start(currentTime);
+                audioObject.audioBufferSource.loop = true;
+                console.log(audioObject.id + ' init ' + new Date().getMilliseconds());
             },
             isInit: false
         };
@@ -99,5 +104,14 @@ export class AudioService {
 
     getAudio(c: AudioContext) : AudioBufferSourceNode {
         return c.createBufferSource();
+    }
+
+    initAudioObjects(){
+        var currentTime = this.context.currentTime;
+        this.audioObjects.forEach((ob) => { ob.init(currentTime); })
+    }
+
+    getMessage(): Observable<any> {
+        return this.subject.asObservable();
     }
 }

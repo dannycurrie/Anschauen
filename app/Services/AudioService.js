@@ -12,13 +12,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/http");
 var Observable_1 = require("rxjs/Observable");
+var Subject_1 = require("rxjs/Subject");
 var AudioService = (function () {
     function AudioService(http) {
         this.http = http;
+        this.audioObjects = new Array();
+        this.subject = new Subject_1.Subject();
     }
     AudioService.prototype.getAudioObject = function (id) {
-        // TODO create and return audio object
         var audioObject = this.initAudioObject(id);
+        this.audioObjects.push(audioObject);
         return new Observable_1.Observable(function (subscriber) { return subscriber.next(audioObject); });
     };
     AudioService.prototype.initAudioObject = function (id) {
@@ -31,6 +34,7 @@ var AudioService = (function () {
         var analyser = this.getAnalyser();
         audioObject = {
             id: id,
+            subject: this.subject,
             filepath: f,
             context: ac,
             analyser: analyser,
@@ -43,12 +47,13 @@ var AudioService = (function () {
             stop: function () {
                 audioObject.gain.gain.value = 0;
             },
-            init: function () {
+            loadAudio: function (notifyLoad) {
+                console.log('loading ' + audioObject.id);
                 var getSound = new XMLHttpRequest();
                 getSound.open("GET", f, true);
                 getSound.responseType = "arraybuffer";
                 getSound.onload = function () {
-                    console.log('decoding');
+                    console.log('decoding ' + audioObject.id);
                     // decode audio data
                     ac.decodeAudioData(getSound.response, function (result) {
                         audioObject.audioBuffer = result;
@@ -57,14 +62,18 @@ var AudioService = (function () {
                         // connect other nodes
                         audioObject.audioBufferSource.connect(audioObject.gain);
                         audioObject.gain.connect(audioObject.context.destination);
-                        // fist time, we'll play silently
-                        audioObject.gain.gain.value = 0;
-                        audioObject.audioBufferSource.start(audioObject.context.currentTime);
-                        audioObject.audioBufferSource.loop = true;
-                        audioObject.isInit = true;
+                        audioObject.subject.next({ id: id });
                     });
                 };
                 getSound.send();
+            },
+            init: function (currentTime) {
+                // fist time, we'll play silently
+                audioObject.gain.gain.value = 0;
+                audioObject.isInit = true;
+                audioObject.audioBufferSource.start(currentTime);
+                audioObject.audioBufferSource.loop = true;
+                console.log(audioObject.id + ' init ' + new Date().getMilliseconds());
             },
             isInit: false
         };
@@ -85,6 +94,13 @@ var AudioService = (function () {
     };
     AudioService.prototype.getAudio = function (c) {
         return c.createBufferSource();
+    };
+    AudioService.prototype.initAudioObjects = function () {
+        var currentTime = this.context.currentTime;
+        this.audioObjects.forEach(function (ob) { ob.init(currentTime); });
+    };
+    AudioService.prototype.getMessage = function () {
+        return this.subject.asObservable();
     };
     return AudioService;
 }());
