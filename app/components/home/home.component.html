@@ -1,12 +1,16 @@
 <audio-viz></audio-viz>
-<div class="col-xs-12" id="audioControls">
-<my-audio class="col-xs-2" (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="synth"></my-audio>
-<my-audio class="col-xs-2" (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="drums"></my-audio>
-<my-audio class="col-xs-2" (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="bass"></my-audio>
-<my-audio class="col-xs-2" (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="drummedglitch"></my-audio>
-<my-audio class="col-xs-2" (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="glitch"></my-audio>
-<my-audio class="col-xs-2" (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="highpiano"></my-audio>
-<my-audio class="col-xs-2" (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="mainpiano"></my-audio>
-<my-audio class="col-xs-2" (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="drumhighglitch"></my-audio>
+<div class="row justify-content-center">
+    <my-audio class="col-xs-4" (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="synth"></my-audio>
+    <my-audio class="col-xs-4" (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="drums"></my-audio>
+    <my-audio class="col-xs-4" (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="bass"></my-audio>
+</div> 
+<div class="row justify-content-center"> 
+<my-audio class="col-xs-4" (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="drummedglitch"></my-audio>
+<my-audio class="col-xs-4" (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="glitch"></my-audio>
+<my-audio class="col-xs-4" (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="highpiano"></my-audio>
+</div>
+<div class="row justify-content-center">
+<my-audio class="col-xs-6" (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="mainpiano"></my-audio>
+<my-audio class="col-xs-6 " (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="drumhighglitch"></my-audio>
 </div>
 

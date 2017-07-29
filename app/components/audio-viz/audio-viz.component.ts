@@ -15,8 +15,8 @@ import * as D3 from 'd3';
 export class AudioVizComponent {
 
     parentNativeElement: any;
-    svgHeight = 600;
-    svgWidth = 960;
+    svgHeight = 650;
+    svgWidth = 0;
     analyser: AnalyserNode;
     frequencyData: Uint8Array;
 
@@ -27,23 +27,31 @@ export class AudioVizComponent {
 
     ngOnInit(){
         var svg = D3.select(this.parentNativeElement).append('svg')
-                .attr('height', this.svgHeight)
-                .attr('width', this.svgWidth);
+                .attr('height', 650)
+                .attr('width', this.parentNativeElement.width)
+                .attr('class', 'row col-xs-12');
         this.renderChart(svg);
     }
 
     renderChart(svg:any) {
+        var domNode = svg.node();
+        this.svgWidth = parseInt(D3.select(domNode).style("width"));
+
         requestAnimationFrame(()=> this.renderChart(svg));
 
         // copy frequency data to frequencyData array.
         this.frequencyData = new Uint8Array(200);
         this.analyser.getByteFrequencyData(this.frequencyData);
         var filteredFreqData:number[] = [];
+        var evenMoreFilteredData:number[] = [];
         var i = 0;
         // filter the fequency data to give a more impactful/less cluttered viz
         this.frequencyData.forEach(function(element) {
             if(i % 4 == 0){
                 filteredFreqData.push(element);
+            }
+            if(i % 9 == 0){
+                evenMoreFilteredData.push(element);
             }
             i++;
         }, this);
@@ -65,38 +73,40 @@ export class AudioVizComponent {
 
         circles
         .attr("r", (d: number) => {return radiusScale(d)})
-        .attr('cx', 100 / 2)
-        .attr('cy', 100 / 2)
+        .attr('cx', this.svgWidth / 2)
+        .attr('cy', this.svgHeight / 2)
         .attr('stroke', '#000000')
         .attr('fill', 'none');
 
         circles.exit().remove(); 
 
         //text
-        // var texts = svg.selectAll('text')
-        //     .data(filteredFreqData);
+        var texts = svg.selectAll('text')
+            .data(evenMoreFilteredData);
 
-        // texts.enter().append('text');
+        texts.enter().append('text');
 
-        // texts
-        //     .attr("x", function(d){ 
-        //         if(d % 2 == 0)
-        //             return svgWidth/2 - radiusScale(d);
-        //         else
-        //             return svgWidth/2 + radiusScale(d) - (d / 2);
-        //     })
-        //     .attr("y", function(d){
-        //          if(d % 2 == 0)
-        //             return svgHeight/2 - d; 
-        //         else
-        //             return svgHeight/2 + d; 
-        //         })
-        //     .text(function(d){ return String.fromCharCode(97 + (d/2)); })
-        //     .attr("font-family", "sans-serif")
-        //     .attr("font-size", function(d) { return d / 2; } )
-        //     .attr("fill", colour);
+        var textCount = 0;
 
-        // texts.exit().remove();
+         texts
+            .attr("x", (d: number) => { 
+                if(d % 2 == 0)
+                    return this.svgWidth/2 - radiusScale(d);
+                else
+                    return this.svgWidth/2 + radiusScale(d) - (d / 2);
+            })
+            .attr("y", (d: number) => {
+                    return this.svgHeight/2; 
+                })
+            .text((d: number) => {
+                 var anchauen = "ĄŊşÇĦȺȗǝȵ";
+                 return anchauen[9 - Math.floor((d / D3.max(evenMoreFilteredData) * 9))];
+            })
+            .attr("font-family", "sans-serif")
+            .attr("font-size", (d: number) =>  { return d; } )
+            .attr("fill", "#000000");
+
+        texts.exit().remove();
     }
 
 }

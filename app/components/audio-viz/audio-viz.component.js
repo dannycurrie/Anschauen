@@ -16,29 +16,36 @@ var D3 = require("d3");
 var AudioVizComponent = (function () {
     function AudioVizComponent(element, audioService) {
         this.audioService = audioService;
-        this.svgHeight = 600;
-        this.svgWidth = 960;
+        this.svgHeight = 650;
+        this.svgWidth = 0;
         this.parentNativeElement = element.nativeElement;
         this.analyser = audioService.getAnalyser();
     }
     AudioVizComponent.prototype.ngOnInit = function () {
         var svg = D3.select(this.parentNativeElement).append('svg')
-            .attr('height', this.svgHeight)
-            .attr('width', this.svgWidth);
+            .attr('height', 650)
+            .attr('width', this.parentNativeElement.width)
+            .attr('class', 'row col-xs-12');
         this.renderChart(svg);
     };
     AudioVizComponent.prototype.renderChart = function (svg) {
         var _this = this;
+        var domNode = svg.node();
+        this.svgWidth = parseInt(D3.select(domNode).style("width"));
         requestAnimationFrame(function () { return _this.renderChart(svg); });
         // copy frequency data to frequencyData array.
         this.frequencyData = new Uint8Array(200);
         this.analyser.getByteFrequencyData(this.frequencyData);
         var filteredFreqData = [];
+        var evenMoreFilteredData = [];
         var i = 0;
         // filter the fequency data to give a more impactful/less cluttered viz
         this.frequencyData.forEach(function (element) {
             if (i % 4 == 0) {
                 filteredFreqData.push(element);
+            }
+            if (i % 9 == 0) {
+                evenMoreFilteredData.push(element);
             }
             i++;
         }, this);
@@ -55,33 +62,34 @@ var AudioVizComponent = (function () {
         circles.enter().append('circle');
         circles
             .attr("r", function (d) { return radiusScale(d); })
-            .attr('cx', 100 / 2)
-            .attr('cy', 100 / 2)
+            .attr('cx', this.svgWidth / 2)
+            .attr('cy', this.svgHeight / 2)
             .attr('stroke', '#000000')
             .attr('fill', 'none');
         circles.exit().remove();
         //text
-        // var texts = svg.selectAll('text')
-        //     .data(filteredFreqData);
-        // texts.enter().append('text');
-        // texts
-        //     .attr("x", function(d){ 
-        //         if(d % 2 == 0)
-        //             return svgWidth/2 - radiusScale(d);
-        //         else
-        //             return svgWidth/2 + radiusScale(d) - (d / 2);
-        //     })
-        //     .attr("y", function(d){
-        //          if(d % 2 == 0)
-        //             return svgHeight/2 - d; 
-        //         else
-        //             return svgHeight/2 + d; 
-        //         })
-        //     .text(function(d){ return String.fromCharCode(97 + (d/2)); })
-        //     .attr("font-family", "sans-serif")
-        //     .attr("font-size", function(d) { return d / 2; } )
-        //     .attr("fill", colour);
-        // texts.exit().remove();
+        var texts = svg.selectAll('text')
+            .data(evenMoreFilteredData);
+        texts.enter().append('text');
+        var textCount = 0;
+        texts
+            .attr("x", function (d) {
+            if (d % 2 == 0)
+                return _this.svgWidth / 2 - radiusScale(d);
+            else
+                return _this.svgWidth / 2 + radiusScale(d) - (d / 2);
+        })
+            .attr("y", function (d) {
+            return _this.svgHeight / 2;
+        })
+            .text(function (d) {
+            var anchauen = "ĄŊşÇĦȺȗǝȵ";
+            return anchauen[9 - Math.floor((d / D3.max(evenMoreFilteredData) * 9))];
+        })
+            .attr("font-family", "sans-serif")
+            .attr("font-size", function (d) { return d; })
+            .attr("fill", "#000000");
+        texts.exit().remove();
     };
     return AudioVizComponent;
 }());
