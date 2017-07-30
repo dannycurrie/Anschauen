@@ -14,17 +14,30 @@ var AudioService_1 = require("../../Services/AudioService");
 require("rxjs/add/operator/map");
 var HomeComponent = (function () {
     function HomeComponent(audioService) {
+        // this.audioService.getAudioLoadNotification().subscribe(message => { 
         var _this = this;
         this.audioService = audioService;
         // counting the loaded audio pieces so we can sync their inits
         this._audioInitCount = 0;
         this._totalAudioComponents = 8;
-        this.audioService.getAudioLoadNotification().subscribe(function (id) {
-            _this._audioInitCount++;
-            console.log(id.id + ' loaded. ' + _this._audioInitCount + ' of 8');
-            // if we have all of the components, proceed with initiation
-            if (_this._audioInitCount == _this._totalAudioComponents) {
-                _this.audioService.initAudioObjects();
+        //     if(message.message == 'audioLoaded'){
+        //         this._audioInitCount++;
+        //         console.log(message.value + ' loaded. ' + this._audioInitCount + ' of 8');
+        //         // if we have all of the components, proceed with initiation
+        //         if(this._audioInitCount == this._totalAudioComponents){
+        //             this.audioService.initAudioObjects();
+        //         }
+        //     }
+        // });
+        this.audioService.audioLoadSubject.subscribe(function (message) {
+            console.log('audio load message: ' + JSON.stringify(message));
+            if (message.message == 'audioLoaded') {
+                _this._audioInitCount++;
+                console.log(message.value + ' loaded. ' + _this._audioInitCount + ' of 8');
+                // if we have all of the components, proceed with initiation
+                if (_this._audioInitCount == _this._totalAudioComponents) {
+                    _this.audioService.initAudioObjects();
+                }
             }
         });
     }

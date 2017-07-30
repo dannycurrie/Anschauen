@@ -16,13 +16,33 @@ export class HomeComponent {
     _totalAudioComponents:number = 8;
 
     constructor(private audioService: AudioService) {
-        this.audioService.getAudioLoadNotification().subscribe(id => { 
-            this._audioInitCount++;
-            console.log(id.id + ' loaded. ' + this._audioInitCount + ' of 8');
+        // this.audioService.getAudioLoadNotification().subscribe(message => { 
 
-            // if we have all of the components, proceed with initiation
-            if(this._audioInitCount == this._totalAudioComponents){
-                this.audioService.initAudioObjects();
+        //     if(message.message == 'audioLoaded'){
+
+        //         this._audioInitCount++;
+        //         console.log(message.value + ' loaded. ' + this._audioInitCount + ' of 8');
+
+        //         // if we have all of the components, proceed with initiation
+        //         if(this._audioInitCount == this._totalAudioComponents){
+        //             this.audioService.initAudioObjects();
+        //         }
+        //     }
+        // });
+        this.audioService.audioLoadSubject.subscribe(
+            message => {
+                console.log('audio load message: ' + JSON.stringify(message));
+
+                if(message.message == 'audioLoaded'){
+
+                    this._audioInitCount++;
+                    console.log(message.value + ' loaded. ' + this._audioInitCount + ' of 8');
+
+                    // if we have all of the components, proceed with initiation
+                    if(this._audioInitCount == this._totalAudioComponents){
+                        this.audioService.initAudioObjects();
+                    }
+                }
             }
         );
     }

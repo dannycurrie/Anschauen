@@ -18,10 +18,20 @@ var AudioVizComponent = (function () {
         this.audioService = audioService;
         this.svgHeight = 650;
         this.svgWidth = 0;
+        this.strokeColour = "#000000";
+        this.colourCounter = 0;
         this.parentNativeElement = element.nativeElement;
         this.analyser = audioService.getAnalyser();
     }
     AudioVizComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        console.log('subscribing to endofbar in viz');
+        this.audioService.endOfBarSubject.subscribe(function (message) {
+            console.log('end of bar message: ' + JSON.stringify(message));
+            if (message.message == 'endOfBar') {
+                _this.switchColours();
+            }
+        });
         var svg = D3.select(this.parentNativeElement).append('svg')
             .attr('height', 650)
             .attr('width', this.parentNativeElement.width)
@@ -64,7 +74,7 @@ var AudioVizComponent = (function () {
             .attr("r", function (d) { return radiusScale(d); })
             .attr('cx', this.svgWidth / 2)
             .attr('cy', this.svgHeight / 2)
-            .attr('stroke', '#000000')
+            .attr('stroke', this.strokeColour)
             .attr('fill', 'none');
         circles.exit().remove();
         //text
@@ -88,8 +98,21 @@ var AudioVizComponent = (function () {
         })
             .attr("font-family", "sans-serif")
             .attr("font-size", function (d) { return d; })
-            .attr("fill", "#000000");
+            .attr("fill", this.strokeColour);
         texts.exit().remove();
+    };
+    AudioVizComponent.prototype.switchColours = function () {
+        console.log("switching colours");
+        if (this.colourCounter == 1) {
+            D3.select("body").transition().duration(500).style("background", "#262626");
+            this.colourCounter = 0;
+            this.strokeColour = "#FFFFFF";
+        }
+        else {
+            D3.select("body").transition().duration(500).style("background", "#F8E8E8");
+            this.colourCounter = 1;
+            this.strokeColour = "#000000";
+        }
     };
     return AudioVizComponent;
 }());

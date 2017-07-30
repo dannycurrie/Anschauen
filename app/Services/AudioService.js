@@ -17,8 +17,13 @@ var AudioService = (function () {
     function AudioService(http) {
         this.http = http;
         this.audioObjects = new Array();
-        this.subject = new Subject_1.Subject();
+        this.audioLoadSubject = new Subject_1.Subject();
+        this.endOfBarSubject = new Subject_1.Subject();
+        this.barLength = 10000;
+        this.barCount = 1;
     }
+    ;
+    ;
     AudioService.prototype.getAudioObject = function (id) {
         var audioObject = this.initAudioObject(id);
         this.audioObjects.push(audioObject);
@@ -34,7 +39,7 @@ var AudioService = (function () {
         var analyser = this.getAnalyser();
         audioObject = {
             id: id,
-            subject: this.subject,
+            subject: this.audioLoadSubject,
             filepath: f,
             context: ac,
             analyser: analyser,
@@ -59,10 +64,11 @@ var AudioService = (function () {
                         audioObject.audioBuffer = result;
                         audioObject.audioBufferSource = audioObject.context.createBufferSource();
                         audioObject.audioBufferSource.buffer = audioObject.audioBuffer;
+                        audioObject.barLength = audioObject.audioBuffer.duration * 1000;
                         // connect other nodes
                         audioObject.audioBufferSource.connect(audioObject.gain);
                         audioObject.gain.connect(audioObject.context.destination);
-                        audioObject.subject.next({ id: id });
+                        audioObject.subject.next({ message: 'audioLoaded', value: audioObject.id });
                     });
                 };
                 getSound.send();
@@ -75,7 +81,9 @@ var AudioService = (function () {
                 audioObject.audioBufferSource.loop = true;
                 console.log(audioObject.id + ' init ' + new Date().getMilliseconds());
             },
-            isInit: false
+            isInit: false,
+            // init bar length - it will get set when we have audio
+            barLength: 100000
         };
         return audioObject;
     };
@@ -96,12 +104,18 @@ var AudioService = (function () {
         return c.createBufferSource();
     };
     AudioService.prototype.initAudioObjects = function () {
+        var _this = this;
+        // get end of bar loop going
+        this.barLength = this.audioObjects[0].barLength;
+        setInterval(function () { _this.triggerEndOfBar(); }, this.barLength);
         // grab current time to sync sounds 
         var currentTime = this.context.currentTime;
         this.audioObjects.forEach(function (ob) { ob.init(currentTime); });
     };
-    AudioService.prototype.getAudioLoadNotification = function () {
-        return this.subject.asObservable();
+    AudioService.prototype.triggerEndOfBar = function () {
+        console.log('tigger end of bar');
+        this.barCount++;
+        this.endOfBarSubject.next({ message: 'endOfBar', value: this.barCount });
     };
     return AudioService;
 }());

@@ -19,6 +19,8 @@ export class AudioVizComponent {
     svgWidth = 0;
     analyser: AnalyserNode;
     frequencyData: Uint8Array;
+    strokeColour:string = "#000000";
+    colourCounter:number = 0;
 
    constructor(element: ElementRef, private audioService: AudioService) {
         this.parentNativeElement = element.nativeElement;
@@ -26,6 +28,17 @@ export class AudioVizComponent {
     }
 
     ngOnInit(){
+
+        console.log('subscribing to endofbar in viz');
+                this.audioService.endOfBarSubject.subscribe(
+                message => {
+                    console.log('end of bar message: ' + JSON.stringify(message));
+                    if(message.message == 'endOfBar'){
+                        this.switchColours();
+                }
+            }
+        );
+
         var svg = D3.select(this.parentNativeElement).append('svg')
                 .attr('height', 650)
                 .attr('width', this.parentNativeElement.width)
@@ -75,7 +88,7 @@ export class AudioVizComponent {
         .attr("r", (d: number) => {return radiusScale(d)})
         .attr('cx', this.svgWidth / 2)
         .attr('cy', this.svgHeight / 2)
-        .attr('stroke', '#000000')
+        .attr('stroke', this.strokeColour)
         .attr('fill', 'none');
 
         circles.exit().remove(); 
@@ -104,9 +117,21 @@ export class AudioVizComponent {
             })
             .attr("font-family", "sans-serif")
             .attr("font-size", (d: number) =>  { return d; } )
-            .attr("fill", "#000000");
+            .attr("fill", this.strokeColour);
 
         texts.exit().remove();
     }
 
+    switchColours(){ 
+        console.log("switching colours");
+        if(this.colourCounter == 1){
+            D3.select("body").transition().duration(500).style("background", "#262626");
+            this.colourCounter = 0;
+            this.strokeColour = "#FFFFFF";
+        }else{
+            D3.select("body").transition().duration(500).style("background", "#F8E8E8");
+            this.colourCounter = 1;
+            this.strokeColour = "#000000";
+        }
+    }
 }

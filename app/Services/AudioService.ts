@@ -11,11 +11,12 @@ export class AudioService {
     context: AudioContext;
     analyser: AnalyserNode;
     audioObjects: Array<IAudioObject> = new Array<IAudioObject>();
-    notifyLoad:Observable<string>;
-    private subject = new Subject<any>();
+    audioLoadSubject:Subject<any> = new Subject<any>();;
+    endOfBarSubject:Subject<any> = new Subject<any>();;
+    barLength: number = 10000;
+    barCount: number = 1;
 
     constructor(private http: Http){
-
     }
 
     getAudioObject(id: string) : Observable<IAudioObject>{
@@ -36,7 +37,7 @@ export class AudioService {
 
         audioObject = {
             id: id,
-            subject: this.subject,
+            subject: this.audioLoadSubject,
             filepath: f,
             context: ac,
             analyser: analyser,
@@ -61,11 +62,12 @@ export class AudioService {
                             audioObject.audioBuffer = result;
                             audioObject.audioBufferSource = audioObject.context.createBufferSource();
                             audioObject.audioBufferSource.buffer = audioObject.audioBuffer;
+                            audioObject.barLength = audioObject.audioBuffer.duration * 1000;
                             
                             // connect other nodes
                             audioObject.audioBufferSource.connect(audioObject.gain);
                             audioObject.gain.connect(audioObject.context.destination);
-                            audioObject.subject.next({ id: id });
+                            audioObject.subject.next({ message: 'audioLoaded', value: audioObject.id  });
                         });
                     }
                     getSound.send();
@@ -78,7 +80,9 @@ export class AudioService {
                 audioObject.audioBufferSource.loop = true;
                 console.log(audioObject.id + ' init ' + new Date().getMilliseconds());
             },
-            isInit: false
+            isInit: false,
+            // init bar length - it will get set when we have audio
+            barLength: 100000
         };
 
         return audioObject;
@@ -107,12 +111,17 @@ export class AudioService {
     }
 
     initAudioObjects(){
+        // get end of bar loop going
+        this.barLength = this.audioObjects[0].barLength;
+        setInterval(() => { this.triggerEndOfBar()}, this.barLength);
         // grab current time to sync sounds 
         var currentTime = this.context.currentTime;
         this.audioObjects.forEach((ob) => { ob.init(currentTime); })
     }
 
-    getAudioLoadNotification(): Observable<any> {
-        return this.subject.asObservable();
+    triggerEndOfBar(){
+        console.log('tigger end of bar');
+        this.barCount++;
+        this.endOfBarSubject.next({ message: 'endOfBar', value: this.barCount });
     }
 }

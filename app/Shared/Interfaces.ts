@@ -15,4 +15,5 @@ export interface IAudioObject {
     init: Function;
     isInit: boolean;
     subject:Subject<any>;
+    barLength:number;
 }
