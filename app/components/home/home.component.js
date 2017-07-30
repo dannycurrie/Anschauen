@@ -14,21 +14,13 @@ var AudioService_1 = require("../../Services/AudioService");
 require("rxjs/add/operator/map");
 var HomeComponent = (function () {
     function HomeComponent(audioService) {
-        // this.audioService.getAudioLoadNotification().subscribe(message => { 
         var _this = this;
         this.audioService = audioService;
+        this.dark = false;
+        this.light = true;
         // counting the loaded audio pieces so we can sync their inits
         this._audioInitCount = 0;
         this._totalAudioComponents = 8;
-        //     if(message.message == 'audioLoaded'){
-        //         this._audioInitCount++;
-        //         console.log(message.value + ' loaded. ' + this._audioInitCount + ' of 8');
-        //         // if we have all of the components, proceed with initiation
-        //         if(this._audioInitCount == this._totalAudioComponents){
-        //             this.audioService.initAudioObjects();
-        //         }
-        //     }
-        // });
         this.audioService.audioLoadSubject.subscribe(function (message) {
             console.log('audio load message: ' + JSON.stringify(message));
             if (message.message == 'audioLoaded') {
@@ -36,11 +28,28 @@ var HomeComponent = (function () {
                 console.log(message.value + ' loaded. ' + _this._audioInitCount + ' of 8');
                 // if we have all of the components, proceed with initiation
                 if (_this._audioInitCount == _this._totalAudioComponents) {
-                    _this.audioService.initAudioObjects();
+                    _this.audioService.initAudioObjects(true);
+                }
+            }
+        });
+        this.audioService.endOfBarSubject.subscribe(function (message) {
+            console.log('end of bar: ' + JSON.stringify(message));
+            if (message.message == 'endOfBar') {
+                if (_this.dark) {
+                    _this.dark = false;
+                    _this.light = true;
+                }
+                else {
+                    _this.dark = true;
+                    _this.light = false;
                 }
             }
         });
     }
+    HomeComponent.prototype.syncAudioPieces = function () {
+        console.log('syncing audio');
+        this.audioService.initAudioObjects(false);
+    };
     return HomeComponent;
 }());
 HomeComponent = __decorate([

@@ -68,14 +68,26 @@ var AudioService = (function () {
                         // connect other nodes
                         audioObject.audioBufferSource.connect(audioObject.gain);
                         audioObject.gain.connect(audioObject.context.destination);
+                        // fist time, we'll play silently
+                        audioObject.gain.gain.value = 0;
                         audioObject.subject.next({ message: 'audioLoaded', value: audioObject.id });
                     });
                 };
                 getSound.send();
             },
-            init: function (currentTime) {
-                // fist time, we'll play silently
-                audioObject.gain.gain.value = 0;
+            init: function (currentTime, gainVal) {
+                // if audio already playing, stop and restart
+                if (audioObject.isInit) {
+                    var playbackRate = audioObject.audioBufferSource.playbackRate.value;
+                    audioObject.audioBufferSource.stop();
+                    audioObject.audioBufferSource = audioObject.context.createBufferSource();
+                    audioObject.audioBufferSource.buffer = audioObject.audioBuffer;
+                    audioObject.audioBufferSource.connect(audioObject.gain);
+                    audioObject.audioBufferSource.playbackRate.value = playbackRate;
+                    // connect to analyser
+                    if (audioObject.gain.gain.value != 0)
+                        audioObject.audioBufferSource.connect(audioObject.analyser);
+                }
                 audioObject.isInit = true;
                 audioObject.audioBufferSource.start(currentTime);
                 audioObject.audioBufferSource.loop = true;
@@ -103,17 +115,20 @@ var AudioService = (function () {
     AudioService.prototype.getAudio = function (c) {
         return c.createBufferSource();
     };
-    AudioService.prototype.initAudioObjects = function () {
+    AudioService.prototype.initAudioObjects = function (setBars) {
         var _this = this;
-        // get end of bar loop going
-        this.barLength = this.audioObjects[0].barLength;
-        setInterval(function () { _this.triggerEndOfBar(); }, this.barLength);
+        if (setBars) {
+            // get end of bar loop going
+            this.barLength = this.audioObjects[0].barLength;
+            setInterval(function () { _this.triggerEndOfBar(); }, this.barLength);
+        }
         // grab current time to sync sounds 
         var currentTime = this.context.currentTime;
-        this.audioObjects.forEach(function (ob) { ob.init(currentTime); });
+        this.audioObjects.forEach(function (ob) {
+            ob.init(currentTime);
+        });
     };
     AudioService.prototype.triggerEndOfBar = function () {
-        console.log('tigger end of bar');
         this.barCount++;
         this.endOfBarSubject.next({ message: 'endOfBar', value: this.barCount });
     };

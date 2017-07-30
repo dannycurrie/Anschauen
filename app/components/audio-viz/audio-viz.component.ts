@@ -15,7 +15,7 @@ import * as D3 from 'd3';
 export class AudioVizComponent {
 
     parentNativeElement: any;
-    svgHeight = 650;
+    svgHeight = 630;
     svgWidth = 0;
     analyser: AnalyserNode;
     frequencyData: Uint8Array;
@@ -30,7 +30,7 @@ export class AudioVizComponent {
     ngOnInit(){
 
         console.log('subscribing to endofbar in viz');
-                this.audioService.endOfBarSubject.subscribe(
+        this.audioService.endOfBarSubject.subscribe(
                 message => {
                     console.log('end of bar message: ' + JSON.stringify(message));
                     if(message.message == 'endOfBar'){

@@ -16,7 +16,7 @@ var D3 = require("d3");
 var AudioVizComponent = (function () {
     function AudioVizComponent(element, audioService) {
         this.audioService = audioService;
-        this.svgHeight = 650;
+        this.svgHeight = 630;
         this.svgWidth = 0;
         this.strokeColour = "#000000";
         this.colourCounter = 0;

@@ -14,8 +14,25 @@ require("rxjs/add/operator/map");
 var AudioService_1 = require("../../Services/AudioService");
 var AudioComponent = (function () {
     function AudioComponent(audioService) {
+        var _this = this;
         this.audioService = audioService;
         this.playing = false;
+        this.playbackSpeed = 1;
+        this.light = true;
+        this.dark = false;
+        this.audioService.endOfBarSubject.subscribe(function (message) {
+            console.log('end of bar message in audiocomponent: ' + JSON.stringify(message));
+            if (message.message == 'endOfBar') {
+                if (_this.dark) {
+                    _this.dark = false;
+                    _this.light = true;
+                }
+                else {
+                    _this.dark = true;
+                    _this.light = false;
+                }
+            }
+        });
     }
     Object.defineProperty(AudioComponent.prototype, "audioId", {
         set: function (audioId) {
@@ -25,6 +42,8 @@ var AudioComponent = (function () {
         enumerable: true,
         configurable: true
     });
+    AudioComponent.prototype.ngOninit = function () {
+    };
     AudioComponent.prototype.getAudio = function (id) {
         var _this = this;
         this.audioService.getAudioObject(id)
@@ -37,17 +56,27 @@ var AudioComponent = (function () {
     AudioComponent.prototype.initAudio = function () {
         this.audioObject.init();
     };
+    AudioComponent.prototype.changeSpeed = function () {
+        if (this.playbackSpeed == 1)
+            this.audioObject.audioBufferSource.playbackRate.value = this.playbackSpeed = 0.5;
+        else
+            this.audioObject.audioBufferSource.playbackRate.value = this.playbackSpeed = 1;
+    };
     AudioComponent.prototype.playAudio = function () {
-        if (!this.playing) {
-            this.audioObject.play();
-            this.audioObject.audioBufferSource.connect(this.audioService.analyser);
-            this.playing = true;
-        }
-        else {
-            this.audioObject.stop();
-            this.playing = false;
-            this.audioObject.audioBufferSource.disconnect(this.audioService.analyser);
-        }
+        this.audioObject.play();
+        this.audioObject.audioBufferSource.connect(this.audioService.analyser);
+        this.playing = true;
+    };
+    AudioComponent.prototype.stopAudio = function () {
+        this.audioObject.stop();
+        this.playing = false;
+        this.audioObject.audioBufferSource.disconnect(this.audioService.analyser);
+    };
+    AudioComponent.prototype.volumeUp = function () {
+        this.audioObject.gain.gain.value += 0.2;
+    };
+    AudioComponent.prototype.volumeDown = function () {
+        this.audioObject.gain.gain.value -= 0.2;
     };
     return AudioComponent;
 }());

@@ -67,14 +67,26 @@ export class AudioService {
                             // connect other nodes
                             audioObject.audioBufferSource.connect(audioObject.gain);
                             audioObject.gain.connect(audioObject.context.destination);
+                            // fist time, we'll play silently
+                            audioObject.gain.gain.value = 0;
                             audioObject.subject.next({ message: 'audioLoaded', value: audioObject.id  });
                         });
                     }
                     getSound.send();
             },
-            init: (currentTime:number)=>{
-                // fist time, we'll play silently
-                audioObject.gain.gain.value = 0;
+            init: (currentTime:number, gainVal:number)=>{
+                // if audio already playing, stop and restart
+                if(audioObject.isInit){
+                    var playbackRate = audioObject.audioBufferSource.playbackRate.value;
+                    audioObject.audioBufferSource.stop();
+                    audioObject.audioBufferSource = audioObject.context.createBufferSource();
+                    audioObject.audioBufferSource.buffer = audioObject.audioBuffer;
+                    audioObject.audioBufferSource.connect(audioObject.gain);
+                    audioObject.audioBufferSource.playbackRate.value = playbackRate;
+                    // connect to analyser
+                    if(audioObject.gain.gain.value != 0)
+                        audioObject.audioBufferSource.connect(audioObject.analyser);
+                }
                 audioObject.isInit = true;
                 audioObject.audioBufferSource.start(currentTime);
                 audioObject.audioBufferSource.loop = true;
@@ -110,17 +122,20 @@ export class AudioService {
         return c.createBufferSource();
     }
 
-    initAudioObjects(){
-        // get end of bar loop going
-        this.barLength = this.audioObjects[0].barLength;
-        setInterval(() => { this.triggerEndOfBar()}, this.barLength);
+    initAudioObjects(setBars:boolean){
+        if(setBars){
+            // get end of bar loop going
+            this.barLength = this.audioObjects[0].barLength;
+            setInterval(() => { this.triggerEndOfBar()}, this.barLength);
+        }
         // grab current time to sync sounds 
         var currentTime = this.context.currentTime;
-        this.audioObjects.forEach((ob) => { ob.init(currentTime); })
+        this.audioObjects.forEach((ob) => { 
+            ob.init(currentTime);
+         })
     }
 
     triggerEndOfBar(){
-        console.log('tigger end of bar');
         this.barCount++;
         this.endOfBarSubject.next({ message: 'endOfBar', value: this.barCount });
     }

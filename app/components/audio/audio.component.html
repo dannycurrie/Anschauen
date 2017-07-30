@@ -1,5 +1,10 @@
 <div>
-    <h3 (click)="playAudio()" [class.playing]="playing">{{_audioId}}</h3>
+    <h3 [class.playing]="playing" [class.dark]="dark" [class.light]="light">{{_audioId}} </h3>
+    <i (click)="playAudio()" class="fa fa-play " [class.dark]="dark" [class.light]="light" [hidden]="playing" aria-hidden="true"></i>
+    <i (click)="stopAudio()" class="fa fa-stop" [class.dark]="dark" [class.light]="light"  [hidden]="!playing" aria-hidden="true"></i>
+    <i (click)="volumeUp()" class="fa fa-volume-up" [class.dark]="dark" [class.light]="light" aria-hidden="true"></i>
+    <i (click)="volumeDown()" class="fa fa-volume-down" [class.dark]="dark" [class.light]="light" aria-hidden="true"></i>
+    <i (click)="changeSpeed()" class="fa fa-clock-o" [class.dark]="dark" [class.light]="light" aria-hidden="true"></i>
 </div>
 
 

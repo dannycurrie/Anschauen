@@ -6,3 +6,11 @@ my-audio{
     display: inline;
 }
 
+.dark{
+    color: black;
+}
+
+.light{
+    color: white;
+}
+

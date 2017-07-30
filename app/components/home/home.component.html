@@ -1,4 +1,9 @@
+<div class="row">
 <audio-viz></audio-viz>
+</div>
+<div class="row">
+<i (click)="syncAudioPieces()" class="fa fa-refresh"  [class.dark]="dark" [class.light]="light" aria-hidden="true"></i>
+</div>
 <div class="row justify-content-center">
     <my-audio class="col-xs-4" (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="synth"></my-audio>
     <my-audio class="col-xs-4" (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="drums"></my-audio>
@@ -13,4 +18,5 @@
 <my-audio class="col-xs-6" (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="mainpiano"></my-audio>
 <my-audio class="col-xs-6 " (audioComponentLoaded)="receiveAudioComponentLoaded($event)" audioId="drumhighglitch"></my-audio>
 </div>
+
 
