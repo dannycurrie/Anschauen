@@ -67,15 +67,17 @@ export class AudioComponent {
             this.audioObject.audioBufferSource.playbackRate.value = this.playbackSpeed = 1;
     }
 
+    togglePlay(){
+        if(this.playing)
+            this.stopAudio();
+        else
+            this.playAudio();
+    }
+
     playAudio(){
         this.audioObject.play();
         this.audioObject.audioBufferSource.connect(this.audioService.analyser);
         this.playing = true;
-    }
-
-    stopAll(value:string){
-        console.log('stop all handler');
-        this.stopAudio();
     }
 
     stopAudio(){

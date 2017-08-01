@@ -1,6 +1,6 @@
 <div class="audioContainer" (mouseover)="showControls()" (mouseout)="hideControls()" [class.dark]="dark" [class.light]="light">
 
-    <div class="label">
+    <div class="label" (click)="togglePlay()">
         <span [class.dark]="dark" [class.light]="light">{{_audioId}} </span>
     </div>
 
@@ -11,7 +11,6 @@
         <i (click)="stopAudio()" class="fa fa-stop" [class.dark]="dark" [class.light]="light"  [hidden]="!playing" aria-hidden="true"></i>
         <i (click)="volumeDown()" class="fa fa-volume-down" [class.dark]="dark" [class.light]="light" aria-hidden="true" [hidden]="!show"></i>
         <i (click)="volumeUp()" class="fa fa-volume-up" [class.dark]="dark" [class.light]="light" aria-hidden="true" [hidden]="!show"></i>
-        <i (click)="toggleDelay()" class="fa fa-repeat" [class.dark]="dark" [class.light]="light" aria-hidden="true" [hidden]="!show"></i>
         <i (click)="changeSpeed()" class="fa fa-clock-o" [class.dark]="dark" [class.light]="light" aria-hidden="true" title="Change Speed" [hidden]="!show"></i>
     </div>
 </div>

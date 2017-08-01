@@ -66,14 +66,16 @@ var AudioComponent = (function () {
         else
             this.audioObject.audioBufferSource.playbackRate.value = this.playbackSpeed = 1;
     };
+    AudioComponent.prototype.togglePlay = function () {
+        if (this.playing)
+            this.stopAudio();
+        else
+            this.playAudio();
+    };
     AudioComponent.prototype.playAudio = function () {
         this.audioObject.play();
         this.audioObject.audioBufferSource.connect(this.audioService.analyser);
         this.playing = true;
-    };
-    AudioComponent.prototype.stopAll = function (value) {
-        console.log('stop all handler');
-        this.stopAudio();
     };
     AudioComponent.prototype.stopAudio = function () {
         this.audioObject.stop();
