@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { AudioService } from '../../Services/AudioService';
 
 @Component({
     selector: 'my-about',
@@ -7,11 +7,24 @@ import { ActivatedRoute } from '@angular/router';
     styleUrls: ['components/about/about.component.css']
 })
 export class AboutComponent {
-    name: string = "About Us";
-    param: string;
 
-    constructor(private params: ActivatedRoute) {
-        params.params
-            .subscribe((data: { id?: string}) => this.param = data.id);
+light:boolean = true;
+dark: boolean = false;
+
+    constructor(private audioService:AudioService) {
+        this.audioService.endOfBarSubject.subscribe(
+            message => {
+                    console.log('end of bar message in aboutcomponent: ' + JSON.stringify(message));
+                    if(message.message == 'endOfBar'){
+                        if(this.dark){
+                            this.dark = false;
+                            this.light = true;
+                        }else{
+                            this.dark = true;
+                            this.light = false;
+                        }
+                }
+            }
+        );
     }
 }

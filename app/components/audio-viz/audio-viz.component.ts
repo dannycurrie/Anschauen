@@ -19,7 +19,7 @@ export class AudioVizComponent {
     svgWidth = 0;
     analyser: AnalyserNode;
     frequencyData: Uint8Array;
-    strokeColour:string = "#000000";
+    strokeColour:string = "#FFFFFF";
     colourCounter:number = 0;
 
    constructor(element: ElementRef, private audioService: AudioService) {

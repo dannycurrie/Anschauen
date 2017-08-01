@@ -1,5 +1,17 @@
-h1 {
+p{
+	float: right;
+	letter-spacing: 5;
 	color: white;
-	background: darkgray;
-	padding: 20px;
+}
+
+a{
+	color: white;
+}
+
+.dark{
+    color: black;
+}
+
+.light{
+    color: white;
 }

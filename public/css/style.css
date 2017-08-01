@@ -1,13 +1,8 @@
 @import url(https://fonts.googleapis.com/css?family=Source+Code+Pro);
 
 body {
-  padding: 50px;
-  font-family: 'Source Code Pro', serif;
+  padding: 20px;
   background-color: #262626;
-}
-
-a {
-  color: #00B7FF;
 }
 
 [hidden] { display: none !important;}
