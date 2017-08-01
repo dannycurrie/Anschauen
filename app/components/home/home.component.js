@@ -30,6 +30,7 @@ var HomeComponent = (function () {
                 // if we have all of the components, proceed with initiation
                 if (_this._audioInitCount == _this._totalAudioComponents) {
                     _this.audioService.initAudioObjects(true);
+                    _this.intialiseTrackDefault();
                 }
             }
         });
@@ -47,6 +48,21 @@ var HomeComponent = (function () {
             }
         });
     }
+    // hard coded initialisation
+    HomeComponent.prototype.intialiseTrackDefault = function () {
+        // this is hacky - should replace with an event based workflow when I figure out how
+        var _this = this;
+        this.audioService.audioObjects.forEach(function (audio) {
+            // half speed main piano
+            if (audio.id == 'mainpiano')
+                audio.audioBufferSource.playbackRate.value = 0.5;
+            // init default instruments
+            if (audio.id == 'bass' || audio.id == 'mainpiano' || audio.id == 'synth' || audio.id == 'drummedglitch') {
+                audio.audioBufferSource.connect(_this.audioService.analyser);
+                audio.play();
+            }
+        });
+    };
     HomeComponent.prototype.syncAudioPieces = function () {
         console.log('syncing audio');
         this.audioService.initAudioObjects(false);

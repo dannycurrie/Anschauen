@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { AudioService } from '../../Services/AudioService';
+import { AudioComponent } from '../Audio/Audio.Component';
 import { Http } from "@angular/http";
 import 'rxjs/add/operator/map';
 
@@ -34,6 +35,7 @@ light = true;
                     // if we have all of the components, proceed with initiation
                     if(this._audioInitCount == this._totalAudioComponents){
                         this.audioService.initAudioObjects(true);
+                        this.intialiseTrackDefault();
                     }
                 }
             }
@@ -53,6 +55,25 @@ light = true;
                 }
             }
         );
+    }
+
+    // hard coded initialisation
+    intialiseTrackDefault(){
+
+        // this is hacky - should replace with an event based workflow when I figure out how
+
+        this.audioService.audioObjects.forEach((audio)=>{
+
+            // half speed main piano
+            if(audio.id == 'mainpiano')
+                audio.audioBufferSource.playbackRate.value = 0.5;
+
+            // init default instruments
+            if(audio.id == 'bass' || audio.id == 'mainpiano' || audio.id == 'synth' || audio.id == 'drummedglitch'){
+                audio.audioBufferSource.connect(this.audioService.analyser);
+                audio.play();
+            }
+        });
     }
 
     syncAudioPieces(){

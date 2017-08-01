@@ -21,6 +21,7 @@ var AudioComponent = (function () {
         this.light = true;
         this.dark = false;
         this.show = false;
+        this.delay = false;
         this.audioService.endOfBarSubject.subscribe(function (message) {
             console.log('end of bar message in audiocomponent: ' + JSON.stringify(message));
             if (message.message == 'endOfBar') {
@@ -39,12 +40,14 @@ var AudioComponent = (function () {
         set: function (audioId) {
             this._audioId = audioId;
             this.getAudio(this._audioId);
+            // this is an awful hack - TODO rethink when I get time
+            // init the default instruments
+            if (this._audioId == 'bass' || this._audioId == 'synth' || this._audioId == 'mainpiano' || this._audioId == 'drummedglitch')
+                this.playing = true;
         },
         enumerable: true,
         configurable: true
     });
-    AudioComponent.prototype.ngOninit = function () {
-    };
     AudioComponent.prototype.getAudio = function (id) {
         var _this = this;
         this.audioService.getAudioObject(id)
@@ -105,4 +108,4 @@ AudioComponent = __decorate([
     __metadata("design:paramtypes", [AudioService_1.AudioService])
 ], AudioComponent);
 exports.AudioComponent = AudioComponent;
-//# sourceMappingURL=audio.component.js.map
+//# sourceMappingURL=Audio.Component.js.map

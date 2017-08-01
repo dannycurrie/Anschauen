@@ -19,10 +19,15 @@ export class AudioComponent {
     light = true;
     dark = false;
     show = false;
+    delay = false;
 
     @Input() set audioId(audioId: string){
         this._audioId = audioId;
         this.getAudio(this._audioId);
+        // this is an awful hack - TODO rethink when I get time
+        // init the default instruments
+        if(this._audioId == 'bass' || this._audioId == 'synth' || this._audioId == 'mainpiano' || this._audioId == 'drummedglitch')
+            this.playing = true;
     }
 
     constructor(private audioService: AudioService) {
@@ -40,10 +45,6 @@ export class AudioComponent {
                 }
             }
         );
-    }
-
-    ngOninit(){
-
     }
 
     getAudio(id: string){
