@@ -18,6 +18,7 @@ var HomeComponent = (function () {
         this.audioService = audioService;
         this.dark = false;
         this.light = true;
+        this.stopAll = new core_1.EventEmitter();
         // counting the loaded audio pieces so we can sync their inits
         this._audioInitCount = 0;
         this._totalAudioComponents = 8;
@@ -50,8 +51,15 @@ var HomeComponent = (function () {
         console.log('syncing audio');
         this.audioService.initAudioObjects(false);
     };
+    HomeComponent.prototype.stopAllAudio = function () {
+        this.stopAll.emit("stop");
+    };
     return HomeComponent;
 }());
+__decorate([
+    core_1.Output(),
+    __metadata("design:type", core_1.EventEmitter)
+], HomeComponent.prototype, "stopAll", void 0);
 HomeComponent = __decorate([
     core_1.Component({
         selector: 'my-home',

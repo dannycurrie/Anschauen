@@ -20,6 +20,7 @@ var AudioComponent = (function () {
         this.playbackSpeed = 1;
         this.light = true;
         this.dark = false;
+        this.show = false;
         this.audioService.endOfBarSubject.subscribe(function (message) {
             console.log('end of bar message in audiocomponent: ' + JSON.stringify(message));
             if (message.message == 'endOfBar') {
@@ -67,6 +68,10 @@ var AudioComponent = (function () {
         this.audioObject.audioBufferSource.connect(this.audioService.analyser);
         this.playing = true;
     };
+    AudioComponent.prototype.stopAll = function (value) {
+        console.log('stop all handler');
+        this.stopAudio();
+    };
     AudioComponent.prototype.stopAudio = function () {
         this.audioObject.stop();
         this.playing = false;
@@ -77,6 +82,12 @@ var AudioComponent = (function () {
     };
     AudioComponent.prototype.volumeDown = function () {
         this.audioObject.gain.gain.value -= 0.2;
+    };
+    AudioComponent.prototype.showControls = function () {
+        this.show = true;
+    };
+    AudioComponent.prototype.hideControls = function () {
+        this.show = false;
     };
     return AudioComponent;
 }());

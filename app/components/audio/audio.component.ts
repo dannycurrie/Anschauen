@@ -18,6 +18,7 @@ export class AudioComponent {
     playbackSpeed:number = 1;
     light = true;
     dark = false;
+    show = false;
 
     @Input() set audioId(audioId: string){
         this._audioId = audioId;
@@ -71,6 +72,11 @@ export class AudioComponent {
         this.playing = true;
     }
 
+    stopAll(value:string){
+        console.log('stop all handler');
+        this.stopAudio();
+    }
+
     stopAudio(){
         this.audioObject.stop();
         this.playing = false;
@@ -83,5 +89,13 @@ export class AudioComponent {
 
     volumeDown(){
         this.audioObject.gain.gain.value -= 0.2;
+    }
+
+    showControls(){
+        this.show = true;
+    }
+
+    hideControls(){
+        this.show = false;
     }
 }

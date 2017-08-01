@@ -1,22 +1,15 @@
-.playing{
-    color: green;
+.audioContainer{
+    letter-spacing: 3;
 }
 
-div{
-    text-align: center;
-    letter-spacing: 2;
+.controls{
+    width: 40%;
+    float: right;
 }
 
-.notplaying .dark{
-    color: darkslategray;
-}
-
-.notplaying .light{
-    color: lightgray;
-}
-
-h3{
-    text-align: center;
+.label{
+    width:40%;
+    float: left;
 }
 
 .dark{
@@ -26,3 +19,12 @@ h3{
 .light{
     color: white;
 }
+
+span{
+    text-align: right;
+}
+
+
+
+
+

@@ -14,6 +14,8 @@ export class HomeComponent {
 dark = false;
 light = true;
 
+@Output() stopAll:EventEmitter<string> = new EventEmitter<string>();
+
     // counting the loaded audio pieces so we can sync their inits
     _audioInitCount:number = 0;
     _totalAudioComponents:number = 8;
@@ -56,5 +58,9 @@ light = true;
     syncAudioPieces(){
         console.log('syncing audio');
         this.audioService.initAudioObjects(false);
+    }
+
+    stopAllAudio(){
+        this.stopAll.emit("stop");
     }
 }
