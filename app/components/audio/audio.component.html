@@ -1,7 +1,7 @@
 <div class="audioContainer" (mouseover)="showControls()" (mouseout)="hideControls()" [class.dark]="dark" [class.light]="light">
 
     <div class="label" (click)="togglePlay()">
-        <span [class.dark]="dark" [class.light]="light">{{_audioId}} </span>
+        <span [class.dark]="dark" [class.light]="light" aria-hidden="true">{{_audioId}} </span>
     </div>
 
     |
