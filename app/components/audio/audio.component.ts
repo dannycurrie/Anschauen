@@ -30,6 +30,8 @@ export class AudioComponent {
             this.playing = true;
     }
 
+    @Output() speedChange:EventEmitter<string> = new EventEmitter<string>();
+
     constructor(private audioService: AudioService) {
         this.audioService.endOfBarSubject.subscribe(
             message => {
@@ -65,6 +67,8 @@ export class AudioComponent {
             this.audioObject.audioBufferSource.playbackRate.value = this.playbackSpeed = 0.5;
         else
             this.audioObject.audioBufferSource.playbackRate.value = this.playbackSpeed = 1;
+
+        this.speedChange.emit(this._audioId);
     }
 
     togglePlay(){

@@ -5,30 +5,28 @@
 </div>
 
 <div class="row masterControls justify-content-center">
-    <i (click)="syncAudioPieces()" class="fa fa-refresh"  [class.dark]="dark" [class.light]="light" aria-hidden="true" title="restart audio - use this when the pieces get out of sync due to speed changes"></i>
-    <!--<i (click)="stopAllAudio()" class="fa fa-stop"  [class.dark]="dark" [class.light]="light" aria-hidden="true"></i>-->
-</div>
+ </div>
 
     <div class="row justify-content-center">
         <div class="col-xs-3 offset-xs-2">
-        <my-audio (stopAll)="audio.stopAudio()" audioId="highpiano"></my-audio>
-        <my-audio audioId="mainpiano"></my-audio>
-        <my-audio audioId="synth"></my-audio>
+        <my-audio (speedChange)="speedChange($event)" audioId="highpiano"></my-audio>
+        <my-audio (speedChange)="speedChange($event)" audioId="mainpiano"></my-audio>
+        <my-audio (speedChange)="speedChange($event)" audioId="synth"></my-audio>
     </div>
 
 
     <div class="col-xs-3">
-        <my-audio audioId="drums"></my-audio>
-        <my-audio audioId="drummedglitch"></my-audio>
-        <my-audio audioId="drumhighglitch"></my-audio>
+        <my-audio (speedChange)="speedChange($event)" audioId="drums"></my-audio>
+        <my-audio (speedChange)="speedChange($event)" audioId="drummedglitch"></my-audio>
+        <my-audio (speedChange)="speedChange($event)" audioId="drumhighglitch"></my-audio>
     </div>
 
     <div class="col-xs-3">
-        <my-audio audioId="bass"></my-audio>
+        <my-audio (speedChange)="speedChange($event)" audioId="bass"></my-audio>
     </div>
 
     <div class="col-xs-3">
-        <my-audio audioId="glitch"></my-audio>
+        <my-audio (speedChange)="speedChange($event)" audioId="glitch"></my-audio>
     </div>
 </div> 
 

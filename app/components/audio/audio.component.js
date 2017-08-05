@@ -22,6 +22,7 @@ var AudioComponent = (function () {
         this.dark = false;
         this.show = false;
         this.delay = false;
+        this.speedChange = new core_1.EventEmitter();
         this.audioService.endOfBarSubject.subscribe(function (message) {
             console.log('end of bar message in audiocomponent: ' + JSON.stringify(message));
             if (message.message == 'endOfBar') {
@@ -65,6 +66,7 @@ var AudioComponent = (function () {
             this.audioObject.audioBufferSource.playbackRate.value = this.playbackSpeed = 0.5;
         else
             this.audioObject.audioBufferSource.playbackRate.value = this.playbackSpeed = 1;
+        this.speedChange.emit(this._audioId);
     };
     AudioComponent.prototype.togglePlay = function () {
         if (this.playing)
@@ -101,6 +103,10 @@ __decorate([
     __metadata("design:type", String),
     __metadata("design:paramtypes", [String])
 ], AudioComponent.prototype, "audioId", null);
+__decorate([
+    core_1.Output(),
+    __metadata("design:type", core_1.EventEmitter)
+], AudioComponent.prototype, "speedChange", void 0);
 AudioComponent = __decorate([
     core_1.Component({
         selector: 'my-audio',

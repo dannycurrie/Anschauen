@@ -63,6 +63,10 @@ var HomeComponent = (function () {
             }
         });
     };
+    HomeComponent.prototype.speedChange = function (audioId) {
+        console.log('speed change from :' + audioId);
+        this.syncAudioPieces();
+    };
     HomeComponent.prototype.syncAudioPieces = function () {
         console.log('syncing audio');
         this.audioService.initAudioObjects(false);

@@ -76,6 +76,11 @@ light = true;
         });
     }
 
+    speedChange(audioId:string){
+        console.log('speed change from :' + audioId);
+        this.syncAudioPieces();
+    }
+
     syncAudioPieces(){
         console.log('syncing audio');
         this.audioService.initAudioObjects(false);
