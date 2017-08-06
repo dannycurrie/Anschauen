@@ -115,12 +115,20 @@ var AudioService = (function () {
     AudioService.prototype.getAudio = function (c) {
         return c.createBufferSource();
     };
-    AudioService.prototype.initAudioObjects = function (setBars) {
+    AudioService.prototype.initAudioObjects = function (startup) {
         var _this = this;
-        if (setBars) {
+        // if we are staring the app 
+        if (startup) {
             // get end of bar loop going
+            console.log('initialising bar loop');
             this.barLength = this.audioObjects[0].barLength;
-            setInterval(function () { _this.triggerEndOfBar(); }, this.barLength);
+            this.barIntervalId = setInterval(function () { _this.triggerEndOfBar(); }, this.barLength);
+        }
+        else {
+            // else we must be resyncing the audio
+            console.log('resetting bar loop');
+            clearInterval(this.barIntervalId);
+            this.barIntervalId = setInterval(function () { _this.triggerEndOfBar(); }, this.barLength);
         }
         // grab current time to sync sounds 
         var currentTime = this.context.currentTime;

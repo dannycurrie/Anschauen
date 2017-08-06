@@ -15,6 +15,7 @@ export class AudioService {
     endOfBarSubject:Subject<any> = new Subject<any>();;
     barLength: number = 10000;
     barCount: number = 1;
+    barIntervalId: any;
 
     constructor(private http: Http){
     }
@@ -122,11 +123,19 @@ export class AudioService {
         return c.createBufferSource();
     }
 
-    initAudioObjects(setBars:boolean){
-        if(setBars){
+    initAudioObjects(startup:boolean){
+
+        // if we are staring the app 
+        if(startup){
             // get end of bar loop going
+            console.log('initialising bar loop');
             this.barLength = this.audioObjects[0].barLength;
-            setInterval(() => { this.triggerEndOfBar()}, this.barLength);
+            this.barIntervalId = setInterval(() => { this.triggerEndOfBar()}, this.barLength);
+        }else{
+            // else we must be resyncing the audio
+            console.log('resetting bar loop');
+            clearInterval(this.barIntervalId);
+            this.barIntervalId = setInterval(() => { this.triggerEndOfBar() }, this.barLength);
         }
         // grab current time to sync sounds 
         var currentTime = this.context.currentTime;
