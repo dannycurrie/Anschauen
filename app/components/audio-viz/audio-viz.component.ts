@@ -21,6 +21,7 @@ export class AudioVizComponent {
     frequencyData: Uint8Array;
     strokeColour:string = "#FFFFFF";
     colourCounter:number = 0;
+    vizText:string = "ĄŊşÇĦȺȗǝȵ";
 
    constructor(element: ElementRef, private audioService: AudioService) {
         this.parentNativeElement = element.nativeElement;
@@ -112,8 +113,7 @@ export class AudioVizComponent {
                     return this.svgHeight/2; 
                 })
             .text((d: number) => {
-                 var anchauen = "ĄŊşÇĦȺȗǝȵ";
-                 return anchauen[9 - Math.floor((d / D3.max(evenMoreFilteredData) * 9))];
+                 return this.vizText[9 - Math.floor((d / D3.max(evenMoreFilteredData) * 9))];
             })
             .attr("font-family", "sans-serif")
             .attr("font-size", (d: number) =>  { return d; } )
@@ -124,6 +124,8 @@ export class AudioVizComponent {
 
     switchColours(){ 
         console.log("switching colours");
+        // reverse viz text
+        this.vizText = this.vizText.split('').reverse().join('');
         if(this.colourCounter == 1){
             D3.select("body").transition().duration(500).style("background", "#262626");
             this.colourCounter = 0;

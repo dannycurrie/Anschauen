@@ -20,6 +20,7 @@ var AudioVizComponent = (function () {
         this.svgWidth = 0;
         this.strokeColour = "#FFFFFF";
         this.colourCounter = 0;
+        this.vizText = "ĄŊşÇĦȺȗǝȵ";
         this.parentNativeElement = element.nativeElement;
         this.analyser = audioService.getAnalyser();
     }
@@ -93,8 +94,7 @@ var AudioVizComponent = (function () {
             return _this.svgHeight / 2;
         })
             .text(function (d) {
-            var anchauen = "ĄŊşÇĦȺȗǝȵ";
-            return anchauen[9 - Math.floor((d / D3.max(evenMoreFilteredData) * 9))];
+            return _this.vizText[9 - Math.floor((d / D3.max(evenMoreFilteredData) * 9))];
         })
             .attr("font-family", "sans-serif")
             .attr("font-size", function (d) { return d; })
@@ -103,6 +103,8 @@ var AudioVizComponent = (function () {
     };
     AudioVizComponent.prototype.switchColours = function () {
         console.log("switching colours");
+        // reverse viz text
+        this.vizText = this.vizText.split('').reverse().join('');
         if (this.colourCounter == 1) {
             D3.select("body").transition().duration(500).style("background", "#262626");
             this.colourCounter = 0;
